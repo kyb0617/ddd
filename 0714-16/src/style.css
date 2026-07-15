@@ -1,0 +1,45 @@
+:root{
+
+  --bg:#EED8B4;
+
+  --paper:#F7E6C6;
+
+  --paper-dark:#E2C69D;
+
+  --brown:#6B4423;
+
+  --brown-light:#A66A34;
+
+  --border:#8B5A2B;
+
+  --common:#2E8B57;      /* 일반 - 초록 */
+  --advanced:#2563EB;    /* 고급 - 파랑 */
+  --rare:#DC2626;        /* 희귀 - 빨강 */
+  --legend:#F59E0B;      /* 전설 - 금색 */
+
+}
+
+@font-face {
+  font-family: "neodgm_code";
+  src: url("./assets/fonts/neodgm_code.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body{
+
+    margin:0;
+
+    padding:0;
+
+    font-family:"neodgm_code", sans-serif;
+
+    background:var(--bg);
+
+    color:var(--brown);
+
+}
+
+button{
+    font-family: "neodgm_code", sans-serif;
+}

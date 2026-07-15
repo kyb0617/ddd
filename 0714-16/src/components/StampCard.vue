@@ -1,298 +1,264 @@
 <script setup>
 
-import {ref, onMounted, onActivated} from "vue"
+import { ref, onMounted } from "vue"
+
+/* 카드 이미지 */
+
+import cardCommon from "../assets/images/card_common.png"
+import cardAdvanced from "../assets/images/card_advanced.png"
+import cardRare from "../assets/images/card_rare.png"
+import cardLegendary from "../assets/images/card_legendary.png"
+import MudeungNationalPark from "../assets/images/place/MudeungNationalPark.png"
+import acc from "../assets/images/place/acc.png"
+
+/* Props */
 
 const props = defineProps({
 
-  stamp: Object
+    stamp:Object
 
 })
 
 
-const distance = ref(null)
+/* 카드 이미지 */
 
-const canGetStamp = ref(false)
+const cardImages={
 
-const isCollected = ref(false)
+    common:cardCommon,
+
+    advanced:cardAdvanced,
+
+    rare:cardRare,
+
+    legendary:cardLegendary
+
+}
+
+function cardImage(){
+
+    return cardImages[props.stamp.rarity]
+
+}
+
+function placeImage(){
+
+    if(props.stamp.place === "무등산 국립공원")
+        return MudeungNationalPark
+
+    if(props.stamp.place === "국립아시아문화전당")
+        return acc
+
+    return ""
+}
+/* 상태 */
+
+const distance=ref(null)
+
+const canGetStamp=ref(false)
+
+const isCollected=ref(false)
+
+const showPopup=ref(false)
+
+
+/* 위치 확인 */
 
 function getLocation(){
 
-console.log(props.stamp)
+    navigator.geolocation.getCurrentPosition(
 
-navigator.geolocation.getCurrentPosition(
+        (position)=>{
 
-(position)=>{
+            const userLat=position.coords.latitude
 
-
-const userLat =
-position.coords.latitude
+            const userLng=position.coords.longitude
 
 
-const userLng =
-position.coords.longitude
+            distance.value=calculateDistance(
 
-console.log(
-"user 위치",
-userLat,
-userLng
-)
+                userLat,
 
+                userLng,
 
-console.log(
-"도장 위치",
-props.stamp.location.lat,
-props.stamp.location.lng
-)
+                props.stamp.location.lat,
 
-distance.value =
-calculateDistance(
+                props.stamp.location.lng
 
-userLat,
-userLng,
-props.stamp.location.lat,
-props.stamp.location.lng
-
-)
+            )
 
 
-// 획득 가능 여부 판단
+            canGetStamp.value=
 
-if(distance.value <= props.stamp.condition.distance){
+                distance.value<=props.stamp.condition.distance
 
-    canGetStamp.value = true
 
-}else{
+            showPopup.value=true
 
-    canGetStamp.value = false
+        },
+
+        (error)=>{
+
+            alert("위치 오류 : "+error.message)
+
+        }
+
+    )
 
 }
 
 
-},
-
-
-(error)=>{
-
-console.log(error)
-
-alert(
-"위치 오류 : "
-+ error.message
-)
-
-}
-
-)
-
-
-}
-
-
+/* 거리 계산 */
 
 function calculateDistance(
 
-lat1,
+    lat1,
 
-lon1,
+    lon1,
 
-lat2,
+    lat2,
 
-lon2
+    lon2
 
 ){
 
+    const R=6371e3
 
-const R = 6371e3;
+    const rad=Math.PI/180
 
+    const dLat=(lat2-lat1)*rad
 
-const rad =
-Math.PI / 180;
-
-
-const dLat =
-(lat2-lat1)*rad;
+    const dLon=(lon2-lon1)*rad
 
 
-const dLon =
-(lon2-lon1)*rad;
+    const a=
+
+        Math.sin(dLat/2)**2+
+
+        Math.cos(lat1*rad)*
+
+        Math.cos(lat2*rad)*
+
+        Math.sin(dLon/2)**2
 
 
-const a =
+    const c=2*Math.atan2(
 
-Math.sin(dLat/2) *
-Math.sin(dLat/2)
+        Math.sqrt(a),
 
-+
+        Math.sqrt(1-a)
 
-Math.cos(lat1*rad) *
-Math.cos(lat2*rad)
-
-*
-
-Math.sin(dLon/2) *
-Math.sin(dLon/2);
+    )
 
 
-
-const c =
-
-2 *
-
-Math.atan2(
-
-Math.sqrt(a),
-
-Math.sqrt(1-a)
-
-);
-
-
-
-return Math.round(R*c);
-
+    return Math.round(R*c)
 
 }
+
+
+/* 획득 */
 
 function getStamp(){
 
+    let stamps=
 
-let stamps =
-JSON.parse(
-localStorage.getItem("myStamps")
-)
-|| []
+    JSON.parse(
 
+        localStorage.getItem("myStamps")
 
-
-// 이미 가지고 있는지 확인
-
-if(stamps.includes(props.stamp.id)){
-
-alert("이미 획득한 도장입니다")
-
-return
-
-}
+    )||[]
 
 
-// 저장
+    if(stamps.includes(props.stamp.id)){
 
-stamps.push(props.stamp.id)
+        alert("이미 획득한 도장입니다.")
 
+        return
 
-localStorage.setItem(
-"myStamps",
-JSON.stringify(stamps)
-)
+    }
 
 
+    stamps.push(props.stamp.id)
 
-isCollected.value = true
+    localStorage.setItem(
 
-window.dispatchEvent(
-new Event("stampUpdated")
-)
+        "myStamps",
 
-alert(
-"✨ " 
-+ props.stamp.place
-+ " 도장 획득!"
-)
+        JSON.stringify(stamps)
+
+    )
 
 
-}
+    isCollected.value=true
 
-function resetStamps(){
+    showPopup.value=false
 
-localStorage.removeItem("myStamps")
 
-isCollected.value = false
+    window.dispatchEvent(
 
-location.reload()
+        new Event("stampUpdated")
 
-}
+    )
 
-function rarityName(rarity){
 
-  if(rarity === "common"){
-    return "COMMON"
-  }
+    alert(
 
-  if(rarity === "rare"){
-    return "RARE"
-  }
+        "✨ "
 
-  if(rarity === "epic"){
-    return "EPIC"
-  }
+        +props.stamp.place
 
-  if(rarity === "legendary"){
-    return "LEGENDARY"
-  }
+        +" 도장 획득!"
 
-  return rarity
+    )
 
 }
 
 
-function rarityIcon(rarity){
+/* 팝업 */
 
-  if(rarity === "common"){
-    return "⚪"
-  }
+function closePopup(){
 
-  if(rarity === "rare"){
-    return "🔷"
-  }
-
-  if(rarity === "epic"){
-    return "💜"
-  }
-
-  if(rarity === "legendary"){
-    return "👑"
-  }
-
-  return "⭐"
+    showPopup.value=false
 
 }
+
+
+/* 획득 여부 */
 
 function checkCollected(){
 
-let stamps =
-JSON.parse(
-localStorage.getItem("myStamps")
-)
-|| []
+    let stamps=
+
+    JSON.parse(
+
+        localStorage.getItem("myStamps")
+
+    )||[]
 
 
-if(stamps.includes(props.stamp.id)){
+    isCollected.value=
 
-isCollected.value = true
-
-}else{
-
-isCollected.value = false
+        stamps.includes(props.stamp.id)
 
 }
 
-}
 
 onMounted(()=>{
 
-
-checkCollected()
-
+    checkCollected()
 
 })
 
+
 window.addEventListener(
-"storage",
-()=>{
 
-checkCollected()
+    "storage",
 
-}
+    ()=>{
+
+        checkCollected()
+
+    }
+
 )
 
 </script>
@@ -300,367 +266,612 @@ checkCollected()
 
 <template>
 
-<div
-class="stamp-card"
-:class="stamp.rarity"
->
+<div class="stamp-card">
 
+    <div class="stamp-card">
 
-<!-- 도장 이미지 영역 -->
+    <!-- ① 뒤쪽 : 관광지 이미지 -->
+    <img
+        class="stamp-photo"
+        :src="placeImage()"
+        alt=""
+    >
 
-<div class="image-area">
+    <!-- ② 앞쪽 : 카드 PNG -->
+    <img
+        class="card-bg"
+        :src="cardImage()"
+        alt=""
+    >
 
+    <!-- 나머지 글씨들은 그대로 -->
 
-<img
-v-if="stamp.image"
-:src="stamp.image"
-class="stamp-image"
-/>
+    </div>
 
+   <!-- 가치 (리본) -->
+    <div class="value">
+    {{ stamp.weight }}
+    </div>
 
-<div
-v-else
-class="empty-image"
->
+  <!-- 도장 이미지 자리 -->
+    <div class="stamp-photo">
+    </div>
 
-🏷️
-<br>
-도장 이미지
+  <!-- 관광명소 이름 -->
+    <div class="place">
+    {{ stamp.place }}
+    </div>
 
-</div>
+ <div class="radius">
 
-
-</div>
-
-
-
-<!-- 이름 -->
-
-<h2>
-{{ stamp.place }}
-</h2>
-
-
-
-<!-- 희귀도 -->
-
-<div 
-class="rarity"
->
-
-{{ rarityIcon(stamp.rarity) }}
-
-{{ rarityName(stamp.rarity) }}
+    {{ stamp.condition.distance }}m 이내
 
 </div>
 
+    <!-- 날씨 -->
+    <div class="weather">
+        {{ stamp.special.weather }}
+    </div>
 
-
-<!-- 가치 -->
-
-<p class="weight">
-
-💎 가치 :
-{{ stamp.weight }}
-
-</p>
-
-
-
-<!-- 조건 -->
-
-<div class="condition">
-
-<p>
-📍 위치 조건 :
-{{ stamp.condition.distance }}m 이내
-</p>
-
-
-<p>
-🌤 날씨 :
-{{ stamp.special.weather }}
-</p>
-
-
-<p>
-⏰ 시간 :
-{{ stamp.special.time }}
-</p>
-
-
-</div>
-
-
-
-<!-- 상태 -->
+    <!-- 기간 -->
+    <div class="period">
+        {{ stamp.special.time }}
+    </div>
 
 <div class="status">
 
-<p v-if="isCollected">
+    <span v-if="isCollected">
 
-✅ 획득 완료
+        ✅ 획득완료
 
-</p>
+    </span>
 
+    <span v-else>
 
-<p v-else>
+        🔒 미획득
 
-🔒 미획득
-
-</p>
+    </span>
 
 </div>
 
-<button @click="getLocation">
+    <!-- 돋보기 버튼 (이미지 버튼 위에 투명 버튼) -->
+    <button
+        class="search-btn"
+        @click="getLocation"
+    >
+    현재 위치 확인
+    </button>
 
-📍 위치 확인
-
-</button>
-
-
-
-
-
-<p v-if="distance">
-
-현재 거리 :
-
-{{distance}}m
-
-</p>
-
-<div v-if="distance">
-
-<p v-if="distance && !canGetStamp && !isCollected">
-
-🔒 아직 멀었습니다
-
-</p>
-
-<p v-if="canGetStamp && !isCollected">
-
-✨ 도장 획득 가능!
-
-</p>
+</div>
 
 
+<!-- ===========================
+        팝업
+============================ -->
 
-<button
-v-if="canGetStamp && !isCollected"
-@click="getStamp"
+<div
+    v-if="showPopup"
+    class="popup-overlay"
+    @click.self="closePopup"
 >
 
-🏷️ 도장 획득
+    <div class="popup">
 
-</button>
+        <h3>{{ stamp.place }}</h3>
+
+        <p>
+
+            현재 거리
+
+            {{ distance }}m
+
+        </p>
+
+        <template v-if="isCollected">
+
+            <p class="success">
+
+                ✅ 획득 완료
+
+            </p>
+
+        </template>
+
+        <template v-else>
+
+            <template v-if="canGetStamp">
+
+                <p class="success">
+
+                    도장 획득 가능!
+
+                </p>
+
+                <button @click="getStamp">
+
+                    도장 획득하기
+
+                </button>
+
+            </template>
+
+            <template v-else>
+
+                <p class="fail">
+
+                    🔒 아직 멀었습니다.
+
+                </p>
+
+            </template>
+
+        </template>
+
+        <button
+            class="close-btn"
+            @click="closePopup"
+        >
+
+            닫기
+
+        </button>
+
+    </div>
 
 </div>
-
-
-
-</div>
-
 
 </template>
 
 
 <style scoped>
+:root{
 
+  --paper:#F5E5BF;
+  --paper2:#EFD5A5;
+
+  --brown:#5A3C1C;
+  --dark:#3B2712;
+
+  --common:#4CAF50;
+  --rare:#3B82F6;
+  --advanced:#A855F7;
+  --legend:#F59E0B;
+
+}
 
 .stamp-card{
 
+    width:380px;
 
-width:280px;
+    position:relative;
 
-padding:20px;
-
-margin:20px;
-
-border-radius:20px;
-
-background:#fff8e7;
-
-border:3px solid #b8860b;
-
-text-align:center;
-
-box-shadow:0 5px 15px rgba(0,0,0,0.15);
-
+    margin:25px auto;
 
 }
 
-/* 희귀도별 카드 디자인 */
+/* ===========================
+      가치 (리본)
+=========================== */
 
-.stamp-card.rare{
+.value{
 
-border-color:#3b82f6;
+    position:absolute;
 
-}
+    top:28px;
 
+    left:50%;
 
-.stamp-card.epic{
+    transform:translateX(-50%);
 
-border-color:#9333ea;
+    width:140px;
 
-background:#f3e8ff;
+    text-align:center;
 
-}
+    font-family:neodgm_code;
 
+    font-size:25px;
 
-.stamp-card.legendary{
+    color:white;
 
-border-color:#f59e0b;
-
-background:#fff7d6;
-
-box-shadow:0 0 20px gold;
-
-}
-
-.image-area{
-
-height:180px;
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
+    z-index:2;
 
 }
 
-.empty-image{
+/* ===========================
+      도장 이미지 자리
+=========================== */
 
-width:150px;
+.stamp-photo{
 
-height:150px;
+    position:absolute;
 
-border:3px dashed #b8860b;
+    top:50px;
 
-border-radius:20px;
+    left:50%;
 
-display:flex;
+    transform:translateX(-50%);
 
-justify-content:center;
+    width:205px;
 
-align-items:center;
+    height:205px;
 
-flex-direction:column;
+    object-fit:cover;
 
-font-size:20px;
+    clip-path:circle(50%);
 
-color:#8b4513;
+    z-index:0;
 
-background:#fff3cd;
+    clip-path:circle(50%);
+    object-fit:cover;
 
 }
-
-
 
 .stamp-image{
 
-width:150px;
+    width:100%;
 
-height:150px;
+    height:100%;
 
-object-fit:contain;
-
-}
-
-
-
-.rarity{
-
-font-size:20px;
-
-font-weight:bold;
-
-margin:10px;
-
-letter-spacing:2px;
+    object-fit:contain;
 
 }
 
-.stamp-card.common .rarity{
+/* ===========================
+      관광명소 이름
+=========================== */
 
-color:#666;
+.place{
 
-}
+    position:absolute;
 
+    top:315px;
 
-.stamp-card.rare .rarity{
+    left:50%;
 
-color:#2563eb;
+    transform:translateX(-50%);
 
-}
+    width:260px;
 
+    text-align:center;
 
-.stamp-card.epic .rarity{
+    font-family:neodgm_code;
 
-color:#9333ea;
+    font-size:24px;
 
-}
+    color:#5A3C1C;
 
-
-.stamp-card.legendary .rarity{
-
-color:#d97706;
-
-}
-
-
-
-.weight{
-
-font-size:18px;
+    z-index:2;
 
 }
 
+/* ===========================
+   반경 / 날씨 / 기간
+=========================== */
 
+.radius{
 
-.condition{
+    position:absolute;
 
-margin-top:15px;
+    top:410px;
 
-font-size:14px;
+    left:47px;
+
+    width:82px;
+
+    line-height:18px;
+
+    text-align:center;
+
+    font-family:neodgm_code;
+
+    font-size:14px;
+
+    color:#5A3C1C;
+
+    z-index:2;
 
 }
 
+.weather{
 
+    position:absolute;
+
+    top:410px;
+
+    left:149px;
+
+    width:82px;
+
+    line-height:18px;
+
+    text-align:center;
+
+    font-family:neodgm_code;
+
+    font-size:14px;
+
+    color:#5A3C1C;
+
+    z-index:2; 
+
+}
+
+.period{
+
+    position:absolute;
+
+    top:410px;
+
+    left:248px;
+
+    width:82px;
+
+    line-height:18px;
+
+    text-align:center;
+
+    font-family:neodgm_code;
+
+    font-size:14px;
+
+    color:#5A3C1C;
+
+    z-index:2;
+
+}
+
+/* ===========================
+      획득 상태
+=========================== */
 
 .status{
 
-margin:15px;
+    position:absolute;
 
-font-size:18px;
+    top:453px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:260px;
+
+    text-align:center;
+
+    font-family:neodgm_code;
+
+    font-size:20px;
+
+    color:#5A3C1C;
+
+      z-index:2;
+
+}
+
+/* ===========================
+   현재 위치 확인 버튼
+=========================== */
+
+.search-btn{
+
+    position:absolute;
+
+    left:45px;
+
+    bottom:-529px;
+
+    width:290px;
+
+    height:58px;
+
+    background:rgba(255,255,255,0);   /* 평소에는 완전 투명 */
+
+    border:none;
+
+    cursor:pointer;
+
+    color:white;
+
+    font-family:neodgm_code;
+
+    font-size:20px;
+
+    text-indent: 14px; /*글씨만 오른쪽으로 이동*/
+
+    transition:background .18s;
+
+    z-index:3;
+
+}
+
+.search-btn:hover{
+
+    background:rgba(255,255,255,0.12);
+
+}
+
+.search-btn:active{
+
+    background:rgba(255,255,255,0.20);
+
+}
+
+/* 원형 메달 */
+
+.stamp-image{
+
+    width:180px;
+
+    height:180px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:6px solid #8A5A2B;
+
+    background:white;
+
+    box-shadow:
+
+        0 0 0 5px #DDB56E,
+
+        5px 5px 0 rgba(0,0,0,.18);
 
 }
 
 
+/* ===========================
+      팝업 안 버튼
+=========================== */
 
-button{
+.popup button{
 
-background:#8b4513;
+    width:180px;
 
-color:white;
+    margin:10px auto;
 
-border:none;
-
-padding:12px 25px;
-
-border-radius:20px;
-
-cursor:pointer;
+    display:block;
 
 }
 
 
-button:hover{
+/* ===========================
+      팝업
+=========================== */
 
-opacity:0.8;
+.popup-overlay{
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100vw;
+    height:100vh;
+
+    background:rgba(0,0,0,.55);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:9999;
 
 }
 
+.popup{
+
+    width:340px;
+
+    padding:24px;
+
+    background:url("../assets/images/parchment.jpg") center/cover no-repeat;
+
+    border:5px solid #6D421B;
+
+    box-shadow:
+        8px 8px 0 #654321,
+        14px 14px 24px rgba(0,0,0,.35);
+
+    text-align:center;
+
+    color:#5A3C1C;
+
+}
+
+.popup h3{
+
+    margin-top:0;
+
+    margin-bottom:20px;
+
+    font-size:24px;
+
+}
+
+.popup p{
+
+    margin:14px 0;
+
+    font-size:18px;
+
+}
+
+.success{
+
+    color:#1E8E3E;
+
+}
+
+.fail{
+
+    color:#C62828;
+
+}
+
+.close-btn{
+
+    background:#777;
+
+    border-color:#555;
+
+}
+
+.close-btn:hover{
+
+    background:#666;
+
+}
+
+/* 획득 가능 상태 */
+
+.success{
+
+    color:#2E8B57;
+
+    font-size:20px;
+
+    font-weight:bold;
+
+    text-shadow:
+        0 0 4px #FFF7A5,
+        0 0 8px #FFD700;
+
+    animation:pulse .8s infinite alternate;
+
+}
+
+/* 반짝이는 애니메이션 */
+
+@keyframes pulse{
+
+    from{
+
+        transform:scale(1);
+
+    }
+
+    to{
+
+        transform:scale(1.08);
+
+    }
+
+}
+
+.card-bg{
+
+    width:100%;
+    display:block;
+
+    position:absolute;
+
+    top:-24px;
+
+    z-index:1;
+}
 
 </style>

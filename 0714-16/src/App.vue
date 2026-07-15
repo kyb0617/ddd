@@ -5,9 +5,8 @@ import {ref, onMounted, computed} from "vue"
 import {useLocalStore}
 from "./stores/localStore"
 
-import StampCard
-from "./components/StampCard.vue"
-
+import StampCard from "./components/StampCard.vue"
+import rarityBar from "./assets/images/raritybar.png"
 
 const store =
 useLocalStore()
@@ -72,7 +71,7 @@ refresh.value++
 <div class="top-bar">
 
 <h1>
-LocalHub 도장 도감
+도장 도감
 </h1>
 
 
@@ -89,8 +88,12 @@ LocalHub 도장 도감
 
 </div>
 
-
 </div>
+
+<img
+class="rarity-bar"
+:src="rarityBar"
+/>
 
 <div class="stamp-list">
 
@@ -107,10 +110,23 @@ v-for="stamp in store.stamps"
 
 </div>
 
-
 </template>
 
 <style>
+
+.rarity-bar{
+
+    display:block;
+
+    width:720px;
+
+    max-width:40%;
+
+    margin:5px auto 0px;
+
+    border:2px slid red;
+
+}
 
 .stamp-list {
 
@@ -132,7 +148,7 @@ justify-content:space-between;
 
 align-items:center;
 
-margin-bottom:30px;
+margin-bottom:5px;
 
 }
 
