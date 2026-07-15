@@ -1,0 +1,54 @@
+[
+  {
+    "id": "STAMP001",
+    "place": "무등산 국립공원",
+
+    "rarity": "rare",
+    "weight": 80,
+
+    "location": {
+      "lat": 35.1595,
+      "lng": 126.8530
+    },
+
+    "condition": {
+      "type": "gps",
+      "distance": 50000
+    },
+
+    "special": {
+      "weather": "맑음",
+      "time": "일출"
+    },
+
+    "image": ""
+  },
+
+
+  {
+    "id": "STAMP002",
+    "place": "국립아시아문화전당",
+
+    "rarity": "epic",
+    "weight": 100,
+
+    "location": {
+      "lat": 35.1410,
+      "lng": 126.9120
+    },
+
+    "condition": {
+      "type": "gps",
+      "distance": 30
+    },
+
+    "special": {
+      "weather": "맑음",
+      "time": "저녁"
+    },
+
+    "description": "비 오는 밤 방문자만 획득 가능한 특별 도장",
+
+    "image": ""
+  }
+]
