@@ -1,54 +1,172 @@
 [
   {
     "id": "STAMP001",
-    "place": "무등산 국립공원",
-
-    "rarity": "rare",
-    "weight": 80,
-
-    "location": {
-      "lat": 35.1595,
-      "lng": 126.8530
-    },
-
+    "place": "이충무공승전공원",
+    "address": "전남광주통합특별시 진도군 군내면 진도대로 8439-19",
+    "lat": "34.5712905794",
+    "lng": "126.2996845467",
+    "image": "http://tong.visitkorea.or.kr/cms/resource/16/3382016_image2_1.JPG",
+    "rarity": "고급",
+    "weight": 30,
     "condition": {
-      "type": "gps",
-      "distance": 50000
-    },
-
-    "special": {
-      "weather": "맑음",
-      "time": "일출"
-    },
-
-    "image": ""
-  },
-
-
-  {
-    "id": "STAMP002",
-    "place": "국립아시아문화전당",
-
-    "rarity": "advanced",
-    "weight": 100,
-
-    "location": {
-      "lat": 35.1410,
-      "lng": 126.9120
-    },
-
-    "condition": {
-      "type": "gps",
       "distance": 30
     },
-
     "special": {
       "weather": "맑음",
-      "time": "저녁"
+      "time": "랜덤 시간"
+    }
+  },
+  {
+    "id": "STAMP002",
+    "place": "만연산",
+    "address": "전남광주통합특별시 화순군 화순읍 진각로",
+    "lat": "35.0943293368",
+    "lng": "126.9950576668",
+    "image": "http://tong.visitkorea.or.kr/cms/resource/98/2604598_image2_1.jpg",
+    "rarity": "일반",
+    "weight": 10,
+    "condition": {
+      "distance": 100
     },
-
-    "description": "비 오는 밤 방문자만 획득 가능한 특별 도장",
-
-    "image": ""
+    "special": {
+      "weather": "흐림",
+      "time": "상시"
+    }
+  },
+  {
+    "id": "STAMP003",
+    "place": "노치마을",
+    "address": "전북특별자치도 남원시 주천면 노치길 71-2",
+    "lat": "35.4024754756",
+    "lng": "127.5018522712",
+    "image": "http://tong.visitkorea.or.kr/cms/resource/15/3589615_image2_1.jpg",
+    "rarity": "희귀",
+    "weight": 50,
+    "condition": {
+      "distance": 30
+    },
+    "special": {
+      "weather": "눈",
+      "time": "상시"
+    }
+  },
+  {
+    "id": "STAMP004",
+    "place": "용담사(남원)",
+    "address": "전북특별자치도 남원시 주천면 원천로 165-12",
+    "lat": "35.4105702278",
+    "lng": "127.4125266187",
+    "image": "http://tong.visitkorea.or.kr/cms/resource/34/3343934_image2_1.jpg",
+    "rarity": "고급",
+    "weight": 30,
+    "condition": {
+      "distance": 30
+    },
+    "special": {
+      "weather": "비",
+      "time": "상시"
+    }
+  },
+  {
+    "id": "STAMP005",
+    "place": "석천사(여수)",
+    "address": "전남광주통합특별시 여수시 충민사길 52-21",
+    "lat": "34.7584825358",
+    "lng": "127.7345011707",
+    "image": "http://tong.visitkorea.or.kr/cms/resource/79/3346479_image2_1.JPG",
+    "rarity": "희귀",
+    "weight": 50,
+    "condition": {
+      "distance": 30
+    },
+    "special": {
+      "weather": "흐림",
+      "time": "랜덤 시간"
+    }
+  },
+  {
+    "id": "STAMP006",
+    "place": "안도해수욕장",
+    "address": "전남광주통합특별시 여수시 남면 안도해수욕장길 105",
+    "lat": "34.4905110672",
+    "lng": "127.8125372529",
+    "image": "http://tong.visitkorea.or.kr/cms/resource/54/3548954_image2_1.JPG",
+    "rarity": "일반",
+    "weight": 10,
+    "condition": {
+      "distance": 100
+    },
+    "special": {
+      "weather": "비",
+      "time": "상시"
+    }
+  },
+  {
+    "id": "STAMP007",
+    "place": "Yun Marbling",
+    "address": "전남광주통합특별시 서구 상무오월로3번길 24-11  ",
+    "lat": "35.1576532469",
+    "lng": "126.8604235345",
+    "image": "http://tong.visitkorea.or.kr/cms/resource/91/2996391_image2_1.jpg",
+    "rarity": "일반",
+    "weight": 10,
+    "condition": {
+      "distance": 10000
+    },
+    "special": {
+      "weather": "흐림",
+      "time": "상시"
+    }
+  },
+  {
+    "id": "STAMP008",
+    "place": "지리산 매동마을",
+    "address": "전북특별자치도 남원시 산내면 매동길 16-4",
+    "lat": "35.4256389174",
+    "lng": "127.6259879310",
+    "image": "http://tong.visitkorea.or.kr/cms/resource/56/3517056_image2_1.jpg",
+    "rarity": "고급",
+    "weight": 30,
+    "condition": {
+      "distance": 100
+    },
+    "special": {
+      "weather": "눈",
+      "time": "상시"
+    }
+  },
+  {
+    "id": "STAMP009",
+    "place": "전주동물원",
+    "address": "전북특별자치도 전주시 덕진구 소리로 68",
+    "lat": "35.8552623666",
+    "lng": "127.1456331460",
+    "image": "http://tong.visitkorea.or.kr/cms/resource/77/3552677_image2_1.jpg",
+    "rarity": "고급",
+    "weight": 30,
+    "condition": {
+      "distance": 100
+    },
+    "special": {
+      "weather": "비",
+      "time": "랜덤 달"
+    }
+  },
+  {
+    "id": "STAMP010",
+    "place": "병풍산(담양)",
+    "address": "전남광주통합특별시 담양군 수북면 대방리",
+    "lat": "35.3246209072",
+    "lng": "126.8856615499",
+    "image": "http://tong.visitkorea.or.kr/cms/resource/57/3582057_image2_1.jpg",
+    "rarity": "고급",
+    "weight": 30,
+    "condition": {
+      "distance": 50
+    },
+    "special": {
+      "weather": "흐림",
+      "time": "랜덤 달"
+    }
   }
 ]

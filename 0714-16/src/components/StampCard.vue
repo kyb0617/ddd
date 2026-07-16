@@ -1,6 +1,6 @@
 <script setup>
 
-import { ref, onMounted } from "vue"
+import { ref, onMounted, computed } from "vue"
 
 /* 카드 이미지 */
 
@@ -11,11 +11,14 @@ import cardLegendary from "../assets/images/card_legendary.png"
 import MudeungNationalPark from "../assets/images/place/MudeungNationalPark.png"
 import acc from "../assets/images/place/acc.png"
 
+
+
 /* Props */
 
 const props = defineProps({
 
-    stamp:Object
+    stamp:Object,
+    image:String
 
 })
 
@@ -24,32 +27,24 @@ const props = defineProps({
 
 const cardImages={
 
-    common:cardCommon,
+    10:cardCommon,
 
-    advanced:cardAdvanced,
+    30:cardAdvanced,
 
-    rare:cardRare,
+    50:cardRare,
 
-    legendary:cardLegendary
-
-}
-
-function cardImage(){
-
-    return cardImages[props.stamp.rarity]
+    80:cardLegendary
 
 }
 
-function placeImage(){
+const cardImage = computed(()=>{
 
-    if(props.stamp.place === "무등산 국립공원")
-        return MudeungNationalPark
+    return cardImages[props.stamp.weight]
 
-    if(props.stamp.place === "국립아시아문화전당")
-        return acc
+})
 
-    return ""
-}
+
+
 /* 상태 */
 
 const distance=ref(null)
@@ -65,9 +60,13 @@ const showPopup=ref(false)
 
 function getLocation(){
 
+    console.log("버튼 클릭됨")
+
     navigator.geolocation.getCurrentPosition(
 
         (position)=>{
+
+            console.log("GPS 성공")
 
             const userLat=position.coords.latitude
 
@@ -80,9 +79,9 @@ function getLocation(){
 
                 userLng,
 
-                props.stamp.location.lat,
+                Number(props.stamp.lat),
 
-                props.stamp.location.lng
+                Number(props.stamp.lng)
 
             )
 
@@ -91,7 +90,7 @@ function getLocation(){
 
                 distance.value<=props.stamp.condition.distance
 
-
+            console.log("팝업 열기")
             showPopup.value=true
 
         },
@@ -268,34 +267,33 @@ window.addEventListener(
 
 <div class="stamp-card">
 
-    <div class="stamp-card">
+    
 
     <!-- ① 뒤쪽 : 관광지 이미지 -->
     <img
         class="stamp-photo"
-        :src="placeImage()"
+        :src="image"
         alt=""
     >
 
     <!-- ② 앞쪽 : 카드 PNG -->
     <img
         class="card-bg"
-        :src="cardImage()"
+        :src="cardImage"
         alt=""
     >
 
     <!-- 나머지 글씨들은 그대로 -->
 
-    </div>
+    
 
    <!-- 가치 (리본) -->
     <div class="value">
-    {{ stamp.weight }}
+    {{ props.stamp.weight }}
     </div>
 
   <!-- 도장 이미지 자리 -->
-    <div class="stamp-photo">
-    </div>
+  
 
   <!-- 관광명소 이름 -->
     <div class="place">
@@ -443,9 +441,13 @@ window.addEventListener(
 
     width:380px;
 
+    height:560px;
+
     position:relative;
 
-    margin:25px auto;
+    margin:25px;
+
+    flex-shrink:0;
 
 }
 
@@ -485,15 +487,15 @@ window.addEventListener(
 
     position:absolute;
 
-    top:50px;
+    top:63px;
 
     left:50%;
 
     transform:translateX(-50%);
 
-    width:205px;
+    width:220px;
 
-    height:205px;
+    height:220px;
 
     object-fit:cover;
 
@@ -524,7 +526,7 @@ window.addEventListener(
 
     position:absolute;
 
-    top:315px;
+    top:308px;
 
     left:50%;
 
@@ -552,7 +554,7 @@ window.addEventListener(
 
     position:absolute;
 
-    top:410px;
+    top:403px;
 
     left:47px;
 
@@ -576,7 +578,7 @@ window.addEventListener(
 
     position:absolute;
 
-    top:410px;
+    top:403px;
 
     left:149px;
 
@@ -600,7 +602,7 @@ window.addEventListener(
 
     position:absolute;
 
-    top:410px;
+    top:403px;
 
     left:248px;
 
@@ -628,7 +630,7 @@ window.addEventListener(
 
     position:absolute;
 
-    top:453px;
+    top:444px;
 
     left:50%;
 
@@ -658,7 +660,7 @@ window.addEventListener(
 
     left:45px;
 
-    bottom:-529px;
+    bottom:17px;
 
     width:290px;
 
@@ -676,11 +678,11 @@ window.addEventListener(
 
     font-size:20px;
 
-    text-indent: 14px; /*글씨만 오른쪽으로 이동*/
+    text-indent: 20px; /*글씨만 오른쪽으로 이동*/
 
     transition:background .18s;
 
-    z-index:3;
+    z-index:4;
 
 }
 
@@ -864,14 +866,21 @@ window.addEventListener(
 
 .card-bg{
 
-    width:100%;
+    width:380px;
+
+    height:560px;
+
     display:block;
 
     position:absolute;
 
-    top:-24px;
+    top:0;
+
+    left:0;
 
     z-index:1;
+
 }
+
 
 </style>

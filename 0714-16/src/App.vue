@@ -2,23 +2,55 @@
 
 import {ref, onMounted, computed} from "vue"
 
+function horizontalScroll(event){
+
+    const list = event.currentTarget
+
+    if(event.deltaY !== 0){
+
+        event.preventDefault()
+
+        list.scrollLeft += event.deltaY
+
+    }
+
+}
+
 import {useLocalStore}
 from "./stores/localStore"
 
 import StampCard from "./components/StampCard.vue"
 import rarityBar from "./assets/images/raritybar.png"
 
+const placeImages = Object.values(
+  import.meta.glob(
+    '@/assets/images/place/*.png',
+    {
+      eager: true,
+      query: '?url',
+      import: 'default'
+    }
+  )
+)
+
 const store =
 useLocalStore()
 
 const refresh = ref(0)
 
-onMounted(()=>{
+const stamps = ref([])
 
-store.loadStamps()
+onMounted(async()=>{
+
+    const response = await fetch("/data/stamps.json")
+
+    const data = await response.json()
+
+    console.log(data)
+
+    stamps.value = data
 
 })
-
 const totalPoint = computed(()=>{
 
 refresh.value
@@ -30,7 +62,7 @@ localStorage.getItem("myStamps")
 || []
 
 
-return store.stamps
+return stamps.value
 
 .filter(
 (stamp)=>
@@ -95,16 +127,18 @@ class="rarity-bar"
 :src="rarityBar"
 />
 
-<div class="stamp-list">
+<div
+    class="stamp-list"
+    @wheel="horizontalScroll"
+ >
 
 
 <StampCard
-
-v-for="stamp in store.stamps"
-
-:key="stamp.id"
-
-:stamp="stamp"
+  v-for="(stamp, index) in stamps"
+  :key="stamp.id"
+  :stamp="stamp"
+  :image="placeImages[index]"
+/>
 
 />
 
@@ -128,15 +162,38 @@ v-for="stamp in store.stamps"
 
 }
 
-.stamp-list {
+.stamp-list{
 
-display:flex;
+    display:flex;
 
-flex-wrap:wrap;
+    flex-direction:row;
 
-gap:20px;
+    flex-wrap:nowrap;   /* 줄바꿈 금지 */
 
-justify-content:flex-start;
+    gap:20px;
+
+    justify-content:flex-start;
+
+    align-items:flex-start;
+
+    overflow-x:auto;    /* 가로 스크롤 */
+
+    overflow-y:hidden;
+
+    width:100vw;
+
+    padding:20px;
+
+}
+.stamp-card{
+
+width:380px;
+
+position:relative;
+
+flex:0 0 380px;   /* 카드 크기 고정 */
+
+margin:25px auto;
 
 }
 
